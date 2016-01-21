@@ -1,0 +1,122 @@
+\documentclass{llncs}
+
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{trackchanges}
+
+\begin{document}
+
+\title{Designing and Developing Context-Aware Mobile Mashups: the CAMUS approach}
+\author{Fabio Corvetta \and Maristella Matera \and Riccardo Medana \and Elisa Quintarelli \and Vincenzo Rizzo \and Letizia Tanca}
+
+\authorrunning{Fabio Corvetta et al.} % abbreviated author list (for running head)
+
+%%%% list of authors for the TOC (use if author list has to be modified)
+\tocauthor{Valerio Cassani, Stefano Gianelli, Maristella Matera, Riccardo Medana, Elisa Quintarelli, Letizia Tanca and Vittorio Zaccaria}
+
+\institute{Politecnico di Milano\\\textit{Dipartimento di Elettronica, Informazione e Bioingegneria}\\
+\email{valerio.cassani@mail.polimi.it, stefano.gianelli@mail.polimi.it, maristella.matera@polimi.it, r.medana@gmail.com, elisa.quintarelli@polimi.it,  letizia.tanca@polimi.it, vittorio.zaccaria@polimi.it}\\
+}
+
+\maketitle              % typeset the title of the contribution
+
+\begin{abstract}
+
+Given the plethora of data and services today available online, it is
+often difficult to identify on-the-fly the information or the
+applications that are appropriate for a given context of use. This is
+even more true in the mobile scenario, where device resources (memory,
+computational power, transmission budget) are still limited and
+therefore data filtering and tailoring are required features. Given
+this evidence, our research focuses on methods and tools for the
+design and development of Context-Aware Mobile mashUpS (CAMUS). CAMUS
+apps dynamically collect and integrate data from documental, social
+and Web resources filtered on the basis of the current context, and
+further adapt the integrated content to the users' situational
+needs. The underlying application paradigm therefore overcomes the
+limits posed by pre-packaged apps and offers to the final users
+flexible and personalized applications whose structure and content may
+even emerge at runtime based on the actual user needs and situation of
+use.
+This paper presents a design method and an accompanying platform for
+the development of CAMUS apps. The approach is characterized by the
+role given to context as a first-class modeling dimension able to
+support i) the identification of the most adequate resources that can
+satisfy the users' situational needs and ii) the consequent tailoring
+at runtime of the provided data and functions. Context-based
+abstractions are exploited to generate models specifying how data
+returned by selected services have to be integrated and visualized by
+means of integrated views. Thanks to the adoption of Model-Driven
+Engineering (MDE) techniques, these models finally drive the flexible
+execution of the final mobile app on target mobile devices. A
+prototype of the platform, making use of novel and advanced Web and
+mobile technologies, is also illustrated.
+
+\keywords{Mobile Mashup, Mashup Modeling, Context Modeling, Context-aware Mobile Applications, GraphQL}
+\end{abstract}
+
+\section{Introduction}
+\input{Sections/Introduction}
+
+\section{Rationale and Background}
+\input{Sections/RationaleBackground}
+
+\section{Platform Organization}
+\input{Sections/Platform}
+
+\section{Conclusions}
+\input{Sections/Conclusions}
+
+\section{Acknowledgments}
+
+
+
+%
+% ---- Bibliography ----
+%
+\bibliographystyle{splncs}
+%\bibliography{biblio_MM}
+
+\begin{thebibliography}{1}
+
+\bibitem{DBLP:journals/vlc/ArditoCDLMPP14}
+Ardito, C., Costabile, M.F., Desolda, G., Lanzilotti, R., Matera, M., Piccinno,
+  A., Picozzi, M.:
+\newblock User-driven visual composition of service-based interactive spaces.
+\newblock J. Vis. Lang. Comput. \textbf{25}(4) (2014)  278--296
+
+\bibitem{DBLP:journals/tlsdkcs/BianchiniCAFQT14}
+Bianchini, D., Castano, S., De Antonellis, V., Ferrara, A., Quintarelli, E., Tanca, L.:
+\newblock {RUBIK:} Proactive, Entity-Centric and Personalized Situational Web Application Design.
+\newblock T. Large-Scale Data-and Knowledge-Cent. Syst., \textbf{13} (2014) 123--157
+
+\bibitem{DBLP:journals/cacm/BolchiniCOQRST09}
+Bolchini, C., Curino, C., Orsi, G., Quintarelli, E., Rossato, R., Schreiber,
+  F.A., Tanca, L.:
+\newblock And what can context do for data?
+\newblock {CACM} \textbf{52}(11) (2009)  136--140
+
+\bibitem{DBLP:journals/debu/BolchiniOQST11}
+Bolchini, C., Orsi, G., Quintarelli, E., Schreiber, F.A., Tanca, L.:
+\newblock Context modeling and context awareness: steps forward in the
+  context-addict project.
+\newblock {IEEE} Data Eng. Bull. \textbf{34}(2) (2011)  47--54
+
+\bibitem{journals/TWEB2015/CappielloMP15}
+Cappiello, C., Matera, M., Picozzi, M.:
+\newblock A {UI}-centric approach for the {End-User Development} of
+  multi-device mashups.
+\newblock ACM Trans. on Web (To appear) (2015)
+
+\bibitem{DBLP:books/sp/DanielM14}
+Daniel, F., Matera, M.:
+\newblock Mashups - Concepts, Models and Architectures.
+\newblock Data-Centric Systems and Applications. Springer (2014)
+
+\end{thebibliography}
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
