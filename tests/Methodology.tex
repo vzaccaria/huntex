@@ -1,0 +1,160 @@
+\label{sec:methodology}
+We now present the design methodology for the creation of CAMUS apps starting from the specification of context requirements.
+Our approach is characterized by the adoption of design environments that, in line with recent approaches to visual programming of mashups, make intensive use of high-level visual abstractions \cite{DBLP:journals/vlc/ArditoCDLMPP14,journals/TWEB2015/CappielloMP15}. Visual paradigms indeed hide the complexity typical of service composition, data integration and the programming of context-aware mobile apps, and assist CAMUS designers (even if non-experts in these technologies) in the creation of multi-device personalized applications.
+
+%The first step requires the specification of context requirements, according to the CDT model. All the aspects that characterize the different contextual situations, i.e., the \emph{dimensions} contributing to context, are represented into the Universal Context Dimension Tree (\emph{Universal CDT}), i.e., the set of possible contexts of use for a given domain of interest, expressed as a hierarchical structure as described in the previous section consisting
+%of \emph{i)} context dimensions (black nodes), modeling the context variables,
+%i.e., the different perspectives through which the user perceives the application domain
+%(e.g., time, place, current company, interest topic), \emph{ii)} the allowed dimension values
+%(white nodes), i.e., the variable values used to tailor the context-aware information (e.g., ``evening'', ``with friends'', ``music''), and \emph{iii)} variables (e.g., ``geographic coordinates''), that are custom values defined by the user or data acquired by device sensors. Any sub-tree of the CDT with at most a value for each dimension represents a possible user context; this selection is sent to the server with variable values, detected at run-time through device sensors, then a response with arranged data for the given context is returned .
+%The adoption of a hierarchical
+%structure allows us to employ different abstraction levels to specify and represent contexts.
+%The  designer specifies the context schema at design-time, identifying the possible
+%contexts the user may find him/herself in at run-time.
+
+%
+\begin{figure} [t]
+\centering
+\includegraphics[width=\textwidth]{Images/ArchitectureGen2016.png}
+\caption{Organization of the CAMUS framework, highlighting the main system components and the supported design and execution activities.}
+\label{fig:architecture}
+\end{figure}
+%
+
+Figure \ref{fig:architecture} represents the general organization of the design framework and highlights the flow of the different activities and related artifacts that enable the transition from high-level modeling notations to running code. In the sequel, we will describe the activities performed by three main \emph{personae}, the \emph{administrator}, the \emph{mashup designer } and the \emph{app user}, who are the main actors interacting with the framework at different levels and with different goals. In order to exemplify how these activities are carried out, we will refer to a case study in the domain of tourism, characterized by: \emph{i)} a touristic \emph{service provider}, who sets up an ecosystem of touristic services and the platform for the delivery of CAMUS apps; \emph{ii) } the \emph{tourist}, i.e., the end user of a CAMUS app created on top of the available services; and \emph{iii) }a \emph{tour agent}, i.e., an intermediary 
+who assists the end user in the creation of the specific tour and, consequently, acts as mash-up designer customizing the CAMUS app according to preferences related to the specific trip and person, and thus not captured by the Universal CDT.     
+
+\subsection{Creation of the Service Ecosystem}
+The \emph{administrator} is in charge of managing the CAMUS server. One of the main roles is to create and maintain the \emph{service repository}. S/He registers distributed resources (remote APIs or in-house services) into the platform, by creating descriptors that specify:
+\begin{itemize}
+\item \emph{How the resources are to be invoked}, e.g, the service endpoint, its operations and input parameters. In this phase, some parameters can be bound to wrappers that perform transformations from symbolic context values gathered at runtime to corresponding numerical service input. Figure \ref{fig:serviceDescriptor} reports an excerpt of a descriptor for a service returning data on events.  The input parameter \texttt{price} is associated with a wrapper that transforms symbolic terms, such as \texttt{low}, \texttt{medium} and \texttt{high} specified as user preferences, into specific price values, as expected by the service.  
+
+%
+\begin{figure} [t]
+\centering
+\includegraphics[width=0.8\textwidth]{Images/ServiceDescriptor.pdf}
+\caption{An excerpt of a service descriptor specifying properties for service invocation.}
+\label{fig:serviceDescriptor}
+\end{figure}
+%
+
+\item \emph{The schema of the returned service responses}. To ensure homogeneity of data formats, needed to merge the data that must be visualized by the final app, the response schema of each registered service is annotated with \emph{terms} (e.g., \emph{title}, \emph{description}, \emph{address}) indicating classes of attributes, according to a vocabulary that is defined and maintained in the service repository. These annotating terms have a double role: when the mashup is defined (see Section \ref{subsec:mashupDesign}), they allow the designer to select service attributes by reasoning on abstract categories, instead of specific attributes resulting from service queries; at run time, they facilitate merging different result sets, since it is easier to identify attributes that refer to the same entity properties. 
+\end{itemize}    
+
+\subsection{Universal CDT augmentation}
+The administrator also specifies the Universal CDT, thus providing a representation of all the possible usage contexts. In order to support the context-aware selection of services at runtime, s/he augments the Universal CDT by defining \emph{mappings} between the identified context elements and the services registered in the platform. 
+
+The services associated with the context elements belong to two different categories. \emph{Core services} provide the main data that contribute to forming the core content of the final app. As represented in Figure \ref{fig:UCDTAugmentation}, they are associated with \emph{primary dimensions}, i.e., the ones for whose children content has to be provided in the final application by means of the core services. For example, services providing data on restaurants are associated with the \texttt{food\&drink} context element of the \texttt{interest topic} dimension. Their selection at runtime thus occurs if the dimension they are associated with is part of the identified context. 
+
+\emph{Support services} then supply auxiliary content (e.g., the meteo condition or the public transportation in a given location) or functionality (e.g., the localization on a map of a restaurant returned by some core service).
+%Based on the provided data, core services are associated to pertinent context elements (e.g., services providing data on restaurants are associated to the \texttt{food\&drink} context element of the \texttt{interest topic} dimension).  
+%
+%Figure \ref{fig:UCDTAugmentation} reports an example of services associated with  \texttt{food\&drink}. The UCDT augmentation is especially important for the so-called \emph{primary dimensions}, the ones for whose children content has to be provided in the final application by means of the  core services.
+%Support services are initially associated to any element of the UCDT, as in principle they are generic with respect to possible domains and contexts and can thus be used for any mashup in any situation of use and for any context dimension. However, they can also be context dependent: for instance, if at runtime the user expresses that s/he is in a situation where s/he wants to use ``transportation by car'', the system provides route information through a map API; otherwise, if s/he selects ``public transport'' it suggests a bus line. 
+As explained in the following, a refinement of the support-service association with specific Universal CDT nodes can be operated by the mashup designer, when this association can help address specific requirements. 
+
+Another point to be considered is that, when the app is working, the available support services may vary depending on the usage context. This means that, during the Universal CDT augmentation, the association  is operated \emph{at the category level}. For example, a ``transport'' service category is associated with a given context node to represent that,  within the final mashups,  transport services will be included when the user incurs in a context containing that node. Then, at runtime a specific service belonging to this category will be invoked, based on the identified geographical area. This requires specifying, within the service descriptor, the category the service belongs to and its characterization with respect to the context values its final selection depends on.
+
+%During this phase the administrator characterizes the role that some further nodes in the Universal CDT play in the runtime selection of services: some elements in the tree can be \emph{filter elements}, when they can supply variables to filter out the final services, or \emph{ranking elements} when they provide parameters to rank candidate services.   
+During this phase the administrator characterizes the role that every node in the Universal CDT plays in the runtime selection of services, by assigning two typologies: filter or ranking. By default all the nodes have a \emph{filter} role, instead the administrator can define some nodes as \emph{ranking} when they have a greater importance in service selection. For example, \emph{location} is a ranking node, because its context elements might influence the selection of services that provide relevant data in a given usage situation.
+%
+\begin{figure} [t]
+\centering
+\includegraphics[width=0.8\textwidth]{Images/UCDT-Augmentation.pdf}
+\caption{An excerpt of a service descriptor specifying properties for service invocation.}
+\label{fig:UCDTAugmentation}
+\end{figure}
+%
+        
+%access to information offered by distributed resources (remote APIs or in-house services), and by suggesting proactively services and APIs that can return data of interest with respect to the specified contexts.
+%In the end, the so-defined augmented UCDT expresses for each given context a virtual image of the relevant portion of the available resources.
+
+\subsection{Mashup Design}
+\label{subsec:mashupDesign}
+The \emph{mashUp designer} starts from the image of the available resources represented by the augmented Universal CDT and, using a \emph{Design Visual Environment}, defines a \emph{Tailored CDT} by further refining the selection of possible contexts and the mapping with services (both core and support), to fulfill the needs and preferences of the specific users or user groups. %and the related most appropriate services, also on the basis of the user preferences;
+
+Given the services associated with a given context dimension (e.g., all the services providing data on restaurants associated with the \texttt{food\&drink} context dimension) the designer can select the categories of attributes (i.e., the annotating terms specified at service-registration time) to be visualized in the mobile app. As schematically represented in Fig. \ref{fig:visualMapping}, this selection is operated visually, according to a composition paradigm for mobile mashup creation already defined in \cite{journals/TWEB2015/CappielloMP15}. The designer drags and drops the semantic terms associated with the attributes of the service
+response.    A ``virtual device'' provides an immediate representation of how the final app will be shown on the client device. 
+In addition, the designer can include in the mashup \emph{support
+services} that can provide additional information to the user. All the visual actions are translated by the design environment in a JSON-based \emph{mashup schema}, which specifies rules that at run-time guide the instantiation of the resulting app and the creation of its views.
+
+%
+\begin{figure} [t]
+\centering
+\includegraphics[width=\textwidth]{Images/visual_mapping_nuovo.png}
+\caption{Schematic representation of the visual mapping activities to associate service attribute classes to elements of the final app UI.}
+\label{fig:visualMapping}
+\end{figure}
+%
+
+
+In addition to this, s/he can refine the association with support services,
+where needed, to enrich the user experience (e.g., provide transport
+indications to reach a restaurant, or extending the core content with description of places taken from Wikipedia). Support services are also context dependent:
+for instance, if the user expresses that s/he is in a situation where s/he wants to use ``transportation by car'', the system provides route information; otherwise, if s/he selects ``public transport'' it suggests
+a bus line.
+
+It is worth noting that, in comparison to other approaches to mashup
+design \cite{DBLP:books/sp/DanielM14}, the composition activity and,
+more specifically, the selection of services are not exclusively driven
+by the functional characteristics of the available services or by the
+compatibility of their input and output parameters. Rather, the
+initial specification of context requirements enables the progressive
+filtering of services first and then the tailoring of service data to
+support the final situations of use.
+
+%,  supported  by providing  them domain-aware access to information collected by the administrator, they tailor the possible contexts that are relevant for a specific user and the most appropriate services, filtered also on the basis of the user preferences.  The designer  is also supported for the specification of APIs composition rules with visual environments.
+%\item
+
+\subsection{App Execution}
+The \emph{CAMUS (app) users} are the final recipients of the mobile
+app that offers a different bouquet of content and functions in each
+different situation of use. When the app is executed, the context
+elements that characterize the current situation, identified
+by means of a client-side \emph{sensor wrapper}, are communicated to
+the server; this, in turn, chooses the correct services to be invoked and returns
+data in an integrated format. The mashup schema created by the designer is
+interpreted {locally} (by means of a \emph{Schema Interpreter}) and the
+generated views are populated with the returned data.
+The platform indeed exploits generative techniques: modeling abstractions guide the
+design of the final applications, while generative layers mediate
+between high-level visual models and low-level engines that
+execute the final mashups. Execution engines, created as {hybrid-native}
+applications for different mobile devices, then make it possible the
+interpretation and pervasive execution of schemas.
+
+%App content and functionality are adapted according to the context parameters gathered in the current situation of use.
+%to transform high-level specifications, defined by the designers through an interactive, visual Web design environment, into running code that executes rules defining both the context-aware selection and composition of the APIs and the context-aware filtering of data retrieved at runtime.
+%This means that the notion of context is first used
+%at design time, when the  administrator defines, for each context,  a virtual image of the relevant
+%portion of the  available resources;  such image is then refined by the designer, who selects the user's possible contexts and the related most appropriate services, also on the basis of the user preferences; at run-time the definition of these context-relevant portions
+%will be employed to collect the currently most appropriate APIs and data.
+
+%It is worth noting that, in comparison to other approaches to mashup
+%design \cite{DBLP:books/sp/DanielM14}, the composition activity and,
+%more specifically, the selection of services are not exclusively driven
+%by the functional characteristics of the available services or by the
+%compatibility of their input and output parameters. Rather, the
+%initial specification of context requirements enables the progressive
+%filtering of services first and then the tailoring of service data to
+%support the final situations of use.
+
+
+%By exploiting a repository of service descriptors and wrappers used to access local as well as remote  resources, the  \emph{CAMUS Designers}, based on the visual specification of the CDT performed by the administrator,  drives the mashup composition and guides the selection of context-pertinent APIs.
+%By means of an intuitive visual notation, the CAMUS Designers are then allowed to specify how the contents coming from such services have to be integrated and visualized within the final app.
+%The \emph{CAMUS MashUp Manager} [1] translates the user composition actions into schemas that also include the specification of the context dimensions the final application must be able to react to. Execution engines, created as native applications for different mobile devices, then allows the end users to run the created application by interpreting and executing the schemas pervasively on multiple devices. App content and functionality are adapted according to the context parameters gathered in the current situation of use.
+
+%\subsection{Architecture}
+%\input{Sections/Architecture}
+%
+%
+%\subsection{Implementation}
+%\input{Sections/Implementation}
+%
+%\subsection{Evaluation}
+%\input{Sections/Evaluation}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../2016-ICWE"
+%%% End:

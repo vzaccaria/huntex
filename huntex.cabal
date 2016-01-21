@@ -29,6 +29,7 @@ executable huntex-exe
                      , huntex
                      , HaTeX
                      , text
+                     , docopt
   default-language:    Haskell2010
 
 test-suite huntex-test
