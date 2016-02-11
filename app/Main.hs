@@ -9,8 +9,9 @@ import Text.LaTeX.Base.Syntax
 import Data.Text (unlines, pack, unpack)
 import qualified Data.Text.IO as T
 import System.Environment (getArgs)
-import System.Console.Docopt
+import System.Console.Docopt.NoTH
 import Control.Monad (when)
+import Usage (progUsage)
 
 
 _sp:: Int -> String
@@ -51,14 +52,21 @@ detex p@(TeXEnv "abstract" args content) = (_eraseEnvProlog "abstract") ++ (dete
 detex p@(TeXEnv _ _ _ ) = (_eraseTex p)
 detex p = (_eraseTex p)
 
-progUsage :: Docopt
-progUsage = [docoptFile|./docs/USAGE.md|]
 
 _rArg :: String -> Docopt -> Arguments -> (IO String)
 _rArg name doc opts = getArgOrExitWith doc opts (argument name)
 
 _lOpt :: String -> Arguments -> Bool
 _lOpt name opts = (isPresent opts (longOption name))
+
+printAST :: String -> IO ()
+printAST name = do {
+  example <- readFile name;
+  case parseLaTeX (pack example) of
+    Left err -> print err
+    Right l  -> do
+      (print l)
+  }
 
 detexFile :: String -> IO ()
 detexFile name = do {
@@ -71,10 +79,14 @@ detexFile name = do {
 
 dispatchOptions :: Docopt -> Arguments -> IO ()
 dispatchOptions doc opts = do {
-  let options = (_lOpt "version" opts, _lOpt "help" opts) in
+  let options = (_lOpt "version" opts, _lOpt "help" opts, _lOpt "ast" opts) in
      case options of
-        (True, _) -> putStrLn "V1.0";
-        (_, True) -> exitWithUsage doc
+        (True, _, _) -> putStrLn "V1.0";
+        (_, _, True) -> do {
+          file <- _rArg "FILE" doc opts;
+          printAST file
+          }
+        (_, True, _) -> exitWithUsage doc
         _ -> do {
           file <- _rArg "FILE" doc opts;
           detexFile file

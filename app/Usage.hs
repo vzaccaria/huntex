@@ -1,3 +1,11 @@
+{-# LANGUAGE QuasiQuotes #-}
+module Usage (progUsage) where
+
+import System.Environment (getArgs)
+import System.Console.Docopt
+
+progUsage :: Docopt
+progUsage = [docopt|
 Huntex.
 
 Usage:
@@ -12,3 +20,4 @@ Options:
 
 Arguments
     FILE            File to be 'huntex'ed
+|]
