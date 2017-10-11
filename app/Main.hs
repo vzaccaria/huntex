@@ -55,6 +55,17 @@ detex p@(TeXEnv "document" args content) =
 detex p@(TeXEnv "abstract" args content) =
     (_eraseEnvProlog "abstract") ++
     (detex content) ++ (_eraseEnvEpilog "abstract")
+detex p@(TeXEnv "letter" args content) =
+    (_eraseEnvProlog "letter") ++ (detex content) ++ (_eraseEnvEpilog "letter")
+detex p@(TeXEnv "reviewer" args content) =
+    (_eraseEnvProlog "reviewer") ++
+    (detex content) ++ (_eraseEnvEpilog "reviewer")
+detex p@(TeXEnv "revcomment" args content) =
+    (_eraseEnvProlog "revcomment") ++
+    (detex content) ++ (_eraseEnvEpilog "revcomment")
+detex p@(TeXEnv "aecomment" args content) =
+    (_eraseEnvProlog "aecomment") ++
+    (detex content) ++ (_eraseEnvEpilog "aecomment")
 detex p@(TeXEnv _ _ _) = (_eraseTex p)
 detex p = (_eraseTex p)
 
