@@ -46,6 +46,12 @@ detex (TeXSeq l1 l2) = (detex l1) ++ (detex l2)
 detex (TeXRaw t) = (unpack (DT.map removeTilde t))
 detex p@(TeXComm "emph" [FixArg (TeXRaw content)]) =
     _eraseSimpleCommand "emph" (unpack content)
+detex p@(TeXComm "texttt" [FixArg (TeXRaw content)]) =
+    _eraseSimpleCommand "texttt" (unpack content)
+detex p@(TeXComm "textit" [FixArg (TeXRaw content)]) =
+    _eraseSimpleCommand "textit" (unpack content)
+detex p@(TeXComm "textbf" [FixArg (TeXRaw content)]) =
+    _eraseSimpleCommand "textbf" (unpack content)
 detex p@(TeXComm _ _) = (_eraseTex p)
 detex p@(TeXComment _) = (_eraseTex p)
 detex p@(TeXEnv "thebibliography" args content) = (_eraseTex p)
